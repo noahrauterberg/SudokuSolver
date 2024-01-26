@@ -59,6 +59,17 @@ sudokus = [
         "..6..485.",
         "..2.....7",
         ".1.59...."
+    ],
+    [
+    "259176834",
+    "874253196",
+    "136894572",
+    "518632947",
+    "692547318",
+    "743918265",
+    "965781432",
+    "387429651",
+    "421365789"
     ]
 ]
 
@@ -107,7 +118,7 @@ for i in range(9):
                         s.add(Implies(variables[i][j][c], Not(
                             variables[i_prime][j_prime][c])))
 
-sudoku = sudokus[0]
+sudoku = sudokus[1]
 # add given numbers
 for i in range(9):
     for j in range(9):
@@ -120,4 +131,6 @@ goal = Goal()
 goal.add(s.assertions())
 cnf = t(goal)
 
-cnf_to_file("sudoku.cnf")
+print(s.check())
+
+cnf_to_file("sudoku_1.cnf")
