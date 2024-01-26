@@ -1,11 +1,11 @@
 import copy
-
+import sys
 
 satisfying_assignment = {}
 
 
 def parse_file(filename):
-    """parses a dimacs cnf file
+    """parses a dimacs cnf file to a list of clauses
 
     Args:
         filename (string): cnf file to parse
@@ -55,7 +55,8 @@ def unit_propagation(clauses, assignment):
                 clauses, unit_literals[0][1:], False)
         else:
             assignment[unit_literals[0]] = True
-            clauses = remove_assignment_from_clauses(clauses, unit_literals[0], True)
+            clauses = remove_assignment_from_clauses(
+                clauses, unit_literals[0], True)
         # due to the unit clause rule, new unit clauses could have been formed or others might have become obsolete
         unit_literals = [c[0] for c in clauses if len(c) == 1]
     return clauses
@@ -78,14 +79,33 @@ def dpll(clauses, assignment):
         new_assignment = clauses[0][0]
         if new_assignment[0] == '-':
             new_assignment = new_assignment[1:]
-        
+
         return dpll(copy.deepcopy(clauses) + [[new_assignment]], dict(assignment)) or dpll(copy.deepcopy(clauses) + [[f"-{new_assignment}"]], dict(assignment))
 
 
-formular = parse_file("sudoku.cnf")
-sat = dpll(formular, {})
-print(sat)
-# if sat:
-#     print(f"Formular is satisfied with assignment:\n{satisfying_assignment}")
-# else:
-#     print("Formular is unsatisfiable")
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Correct usage: python3 dpll.py <filename> <show_assignment>")
+        sys.exit()
+    if len(sys.argv) < 3:
+        show_assignment = False
+    else:
+        show_assignment = sys.argv[2].lower()
+        if show_assignment == "true":
+            show_assignment = True
+        elif show_assignment == "false":
+            show_assignment = False
+        else:
+            print("Correct usage: python3 dpll.py <filename> <show_assignment>")
+            sys.exit()
+
+    filename = sys.argv[1]
+    formular = parse_file(filename)
+    sat = dpll(formular, {})
+    if sat and show_assignment:
+        print(f"Formular is satisfied with assignment:\n{
+              satisfying_assignment}")
+    elif sat:
+        print("Formular is satisfiable")
+    else:
+        print("Formular is unsatisfiable")
