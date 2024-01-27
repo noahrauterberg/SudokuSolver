@@ -1,27 +1,8 @@
 import copy
 import sys
+from utils import parse_file, print_solution
 
 satisfying_assignment = {}
-
-
-def parse_file(filename):
-    """parses a dimacs cnf file to a list of clauses
-
-    Args:
-        filename (string): cnf file to parse
-    """
-    clauses = []
-    with open(filename, "r") as f:
-        for line in f:
-            # empty lines and comments are not being parsed
-            if line == "" or line[0] == 'c':
-                continue
-            # currently, the declaration line is not being used
-            if line[0] == 'p':
-                continue
-            clause = [i for i in line[:-2].split()]
-            clauses.append(clause)
-    return clauses
 
 
 def remove_assignment_from_clauses(clauses, assignment_variable, value):
@@ -85,26 +66,26 @@ def dpll(clauses, assignment):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Correct usage: python3 dpll.py <filename> <show_assignment>")
+        print("Correct usage: python3 dpll.py <filename> <show_solution>")
         sys.exit()
     if len(sys.argv) < 3:
-        show_assignment = False
+        show_solution = False
     else:
-        show_assignment = sys.argv[2].lower()
-        if show_assignment == "true":
-            show_assignment = True
-        elif show_assignment == "false":
-            show_assignment = False
+        show_solution = sys.argv[2].lower()
+        if show_solution == "true":
+            show_solution = True
+        elif show_solution == "false":
+            show_solution = False
         else:
-            print("Correct usage: python3 dpll.py <filename> <show_assignment>")
+            print("Correct usage: python3 dpll.py <filename> <show_solution>")
             sys.exit()
 
     filename = sys.argv[1]
     formular = parse_file(filename)
     sat = dpll(formular, {})
-    if sat and show_assignment:
-        print(f"Formular is satisfied with assignment:\n{
-              satisfying_assignment}")
+    if sat and show_solution:
+        solution = [var for var in satisfying_assignment.keys() if satisfying_assignment[var]]
+        print_solution(solution)
     elif sat:
         print("Formular is satisfiable")
     else:

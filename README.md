@@ -7,7 +7,7 @@ In this repository, I am creating a SAT solver which uses propositional logic in
 
 ## Solvers
 
-- dpll.py: A standard dpll solver. Usage:```python3 dpll.py <filename> <show_assignment>```
+- dpll.py: A standard dpll solver. Usage:```python3 dpll.py <filename> <show_solution>```
 
 ## Utils
 
